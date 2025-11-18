@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "https://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>TestNG Report</title>
+<style type="text/css">table {margin-bottom:10px;border-collapse:collapse;empty-cells:show}th,td {border:1px solid #009;padding:.25em .5em}th {vertical-align:bottom}td {vertical-align:top}table a {font-weight:bold}.stripe td {background-color: #E6EBF9}.num {text-align:right}.passedodd td {background-color: #3F3}.passedeven td {background-color: #0A0}.skippedodd td {background-color: #DDD}.skippedeven td {background-color: #CCC}.failedodd td,.attn {background-color: #F33}.failedeven td,.stripe .attn {background-color: #D00}.stacktrace {white-space:pre;font-family:monospace}.totop {font-size:85%;text-align:center;border-bottom:2px solid #000}.invisible {display:none}</style>
+</head>
+<body>
+<table>
+<tr><th>Test</th><th># Passed</th><th># Skipped</th><th># Retried</th><th># Failed</th><th>Time (ms)</th><th>Included Groups</th><th>Excluded Groups</th></tr>
+<tr><th colspan="8">OutcomeMD_Automation</th></tr>
+<tr><td><a href="#t0">PatientCreation</a></td><td class="num">0</td><td class="num attn">12</td><td class="num">0</td><td class="num attn">2</td><td class="num">372,569</td><td></td><td></td></tr>
+</table>
+<table id='summary'><thead><tr><th>Class</th><th>Method</th><th>Start</th><th>Time (ms)</th></tr></thead><tbody><tr><th colspan="4">OutcomeMD_Automation</th></tr></tbody><tbody id="t0"><tr><th colspan="4">PatientCreation &#8212; failed (configuration methods)</th></tr><tr class="failedeven"><td rowspan="1">Staging.PatientCreate</td><td><a href="#m0">setup</a></td><td rowspan="1">1763445997580</td><td rowspan="1">45289</td></tr><tr><th colspan="4">PatientCreation &#8212; failed</th></tr><tr class="failedeven"><td rowspan="1">Staging.LoginPage</td><td><a href="#m1">loginTest</a></td><td rowspan="1">1763445933187</td><td rowspan="1">64367</td></tr><tr class="failedodd"><td rowspan="1">Staging.PatientManagementTab</td><td><a href="#m2">openPatientAndNavigateToManagementTab</a></td><td rowspan="1">1763446042910</td><td rowspan="1">262727</td></tr><tr><th colspan="4">PatientCreation &#8212; skipped</th></tr><tr class="skippedeven"><td rowspan="5">Staging.PatientCreate</td><td><a href="#m3">clickAddButton</a></td><td rowspan="1">1763446042903</td><td rowspan="1">0</td></tr><tr class="skippedeven"><td><a href="#m4">selectEthnicity</a></td><td rowspan="1">1763446042898</td><td rowspan="1">0</td></tr><tr class="skippedeven"><td><a href="#m5">selectGender</a></td><td rowspan="1">1763446042889</td><td rowspan="1">0</td></tr><tr class="skippedeven"><td><a href="#m6">selectRace</a></td><td rowspan="1">1763446042893</td><td rowspan="1">1</td></tr><tr class="skippedeven"><td><a href="#m7">selectSex</a></td><td rowspan="1">1763446042879</td><td rowspan="1">1</td></tr><tr class="skippedodd"><td rowspan="7">Staging.PatientManagementTab</td><td><a href="#m8">addCallLogEntry</a></td><td rowspan="1">1763446305652</td><td rowspan="1">0</td></tr><tr class="skippedodd"><td><a href="#m9">addDiagnosis</a></td><td rowspan="1">1763446305657</td><td rowspan="1">1</td></tr><tr class="skippedodd"><td><a href="#m10">addFilter</a></td><td rowspan="1">1763446305663</td><td rowspan="1">0</td></tr><tr class="skippedodd"><td><a href="#m11">addMedications</a></td><td rowspan="1">1763446305655</td><td rowspan="1">0</td></tr><tr class="skippedodd"><td><a href="#m12">addPatientNote</a></td><td rowspan="1">1763446305649</td><td rowspan="1">0</td></tr><tr class="skippedodd"><td><a href="#m13">addProcedure</a></td><td rowspan="1">1763446305660</td><td rowspan="1">0</td></tr><tr class="skippedodd"><td><a href="#m14">addTask</a></td><td rowspan="1">1763446305646</td><td rowspan="1">0</td></tr></tbody>
+</table>
+<h2>PatientCreation</h2><h3 id="m0">Staging.PatientCreate#setup</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">org.openqa.selenium.TimeoutException: Expected condition failed: waiting for element to be clickable: By.xpath: //input[@placeholder=&apos;Search or Add Patient (name, cell, or email)&apos;] (tried for 40 second(s) with 500 milliseconds interval)
+Build info: version: &apos;4.35.0&apos;, revision: &apos;1c58e5028b&apos;
+System info: os.name: &apos;Linux&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.8.0-87-generic&apos;, java.version: &apos;17.0.16&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities {acceptInsecureCerts: false, browserName: chrome, browserVersion: 142.0.7444.134, chrome: {chromedriverVersion: 142.0.7444.175 (302067f14a4..., userDataDir: /tmp/.org.chromium.Chromium...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:45239}, goog:processID: 54879, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: linux, proxy: Proxy(), se:cdp: ws://localhost:45239/devtoo..., se:cdpVersion: 142.0.7444.134, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
+Session ID: 97210cef19966f84b4061396a364b92f
+	at org.openqa.selenium.support.ui.WebDriverWait.timeoutException(WebDriverWait.java:84)
+	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:228)
+	at Staging.PatientCreate.openAddPatientForm(PatientCreate.java:57)
+	at Staging.PatientCreate.setup(PatientCreate.java:26)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 29 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m1">Staging.LoginPage#loginTest</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">org.openqa.selenium.TimeoutException: Expected condition failed: waiting for visibility of element located by By.xpath: //input[@placeholder=&apos;Email&apos;] (tried for 60 second(s) with 500 milliseconds interval)
+Build info: version: &apos;4.35.0&apos;, revision: &apos;1c58e5028b&apos;
+System info: os.name: &apos;Linux&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.8.0-87-generic&apos;, java.version: &apos;17.0.16&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities {acceptInsecureCerts: false, browserName: chrome, browserVersion: 142.0.7444.134, chrome: {chromedriverVersion: 142.0.7444.175 (302067f14a4..., userDataDir: /tmp/.org.chromium.Chromium...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:45239}, goog:processID: 54879, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: linux, proxy: Proxy(), se:cdp: ws://localhost:45239/devtoo..., se:cdpVersion: 142.0.7444.134, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
+Session ID: 97210cef19966f84b4061396a364b92f
+	at org.openqa.selenium.support.ui.WebDriverWait.timeoutException(WebDriverWait.java:84)
+	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:228)
+	at Staging.LoginPage.loginTest(LoginPage.java:35)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 31 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m2">Staging.PatientManagementTab#openPatientAndNavigateToManagementTab</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {&quot;method&quot;:&quot;xpath&quot;,&quot;selector&quot;:&quot;//*[@id=&quot;main-contents&quot;]/div/div/div/div[2]/div/div/div[1]/span[2]/span[2]&quot;}
+  (Session info: chrome=142.0.7444.134)
+For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
+Build info: version: &apos;4.35.0&apos;, revision: &apos;1c58e5028b&apos;
+System info: os.name: &apos;Linux&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.8.0-87-generic&apos;, java.version: &apos;17.0.16&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Command: [97210cef19966f84b4061396a364b92f, findElement {value=//*[@id=&quot;main-contents&quot;]/div/div/div/div[2]/div/div/div[1]/span[2]/span[2], using=xpath}]
+Capabilities {acceptInsecureCerts: false, browserName: chrome, browserVersion: 142.0.7444.134, chrome: {chromedriverVersion: 142.0.7444.175 (302067f14a4..., userDataDir: /tmp/.org.chromium.Chromium...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:45239}, goog:processID: 54879, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: linux, proxy: Proxy(), se:cdp: ws://localhost:45239/devtoo..., se:cdpVersion: 142.0.7444.134, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
+Session ID: 97210cef19966f84b4061396a364b92f
+	at org.openqa.selenium.remote.ErrorCodec.decode(ErrorCodec.java:167)
+	at org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:138)
+	at org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:50)
+	at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:215)
+	at org.openqa.selenium.remote.service.DriverCommandExecutor.invokeExecute(DriverCommandExecutor.java:216)
+	at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:174)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:557)
+	at org.openqa.selenium.remote.ElementLocation$ElementFinder$2.findElement(ElementLocation.java:165)
+	at org.openqa.selenium.remote.ElementLocation.findElement(ElementLocation.java:59)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:380)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:374)
+	at Staging.StableUtils.clickWithRetries(StableUtils.java:29)
+	at Staging.PatientManagementTab.openPatientAndNavigateToManagementTab(PatientManagementTab.java:42)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 35 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m3">Staging.PatientCreate#clickAddButton</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.Throwable: Method Staging.PatientCreate.clickAddButton() on instance Staging.PatientCreate@309e345f depends on not successfully finished methods 
+[Staging.PatientCreate.selectEthnicity() on instance Staging.PatientCreate@309e345f]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 22 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m4">Staging.PatientCreate#selectEthnicity</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.Throwable: Method Staging.PatientCreate.selectEthnicity() on instance Staging.PatientCreate@309e345f depends on not successfully finished methods 
+[Staging.PatientCreate.selectRace() on instance Staging.PatientCreate@309e345f]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 22 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m5">Staging.PatientCreate#selectGender</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.Throwable: Method Staging.PatientCreate.selectGender() on instance Staging.PatientCreate@309e345f depends on not successfully finished methods 
+[Staging.PatientCreate.selectSex() on instance Staging.PatientCreate@309e345f]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 22 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m6">Staging.PatientCreate#selectRace</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.Throwable: Method Staging.PatientCreate.selectRace() on instance Staging.PatientCreate@309e345f depends on not successfully finished methods 
+[Staging.PatientCreate.selectGender() on instance Staging.PatientCreate@309e345f]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 22 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m7">Staging.PatientCreate#selectSex</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">org.openqa.selenium.TimeoutException: Expected condition failed: waiting for element to be clickable: By.xpath: //input[@placeholder=&apos;Search or Add Patient (name, cell, or email)&apos;] (tried for 40 second(s) with 500 milliseconds interval)
+Build info: version: &apos;4.35.0&apos;, revision: &apos;1c58e5028b&apos;
+System info: os.name: &apos;Linux&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.8.0-87-generic&apos;, java.version: &apos;17.0.16&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities {acceptInsecureCerts: false, browserName: chrome, browserVersion: 142.0.7444.134, chrome: {chromedriverVersion: 142.0.7444.175 (302067f14a4..., userDataDir: /tmp/.org.chromium.Chromium...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:45239}, goog:processID: 54879, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: linux, proxy: Proxy(), se:cdp: ws://localhost:45239/devtoo..., se:cdpVersion: 142.0.7444.134, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
+Session ID: 97210cef19966f84b4061396a364b92f
+	at org.openqa.selenium.support.ui.WebDriverWait.timeoutException(WebDriverWait.java:84)
+	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:228)
+	at Staging.PatientCreate.openAddPatientForm(PatientCreate.java:57)
+	at Staging.PatientCreate.setup(PatientCreate.java:26)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 29 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m8">Staging.PatientManagementTab#addCallLogEntry</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.Throwable: Method Staging.PatientManagementTab.addCallLogEntry() on instance Staging.PatientManagementTab@18ce0030 depends on not successfully finished methods 
+[Staging.PatientManagementTab.addPatientNote() on instance Staging.PatientManagementTab@18ce0030]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 22 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m9">Staging.PatientManagementTab#addDiagnosis</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.Throwable: Method Staging.PatientManagementTab.addDiagnosis() on instance Staging.PatientManagementTab@18ce0030 depends on not successfully finished methods 
+[Staging.PatientManagementTab.addMedications() on instance Staging.PatientManagementTab@18ce0030]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 22 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m10">Staging.PatientManagementTab#addFilter</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.Throwable: Method Staging.PatientManagementTab.addFilter() on instance Staging.PatientManagementTab@18ce0030 depends on not successfully finished methods 
+[Staging.PatientManagementTab.addProcedure() on instance Staging.PatientManagementTab@18ce0030]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 22 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m11">Staging.PatientManagementTab#addMedications</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.Throwable: Method Staging.PatientManagementTab.addMedications() on instance Staging.PatientManagementTab@18ce0030 depends on not successfully finished methods 
+[Staging.PatientManagementTab.addCallLogEntry() on instance Staging.PatientManagementTab@18ce0030]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 22 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m12">Staging.PatientManagementTab#addPatientNote</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.Throwable: Method Staging.PatientManagementTab.addPatientNote() on instance Staging.PatientManagementTab@18ce0030 depends on not successfully finished methods 
+[Staging.PatientManagementTab.addTask() on instance Staging.PatientManagementTab@18ce0030]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 22 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m13">Staging.PatientManagementTab#addProcedure</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.Throwable: Method Staging.PatientManagementTab.addProcedure() on instance Staging.PatientManagementTab@18ce0030 depends on not successfully finished methods 
+[Staging.PatientManagementTab.addDiagnosis() on instance Staging.PatientManagementTab@18ce0030]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 22 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m14">Staging.PatientManagementTab#addTask</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.Throwable: Method Staging.PatientManagementTab.addTask() on instance Staging.PatientManagementTab@18ce0030 depends on not successfully finished methods 
+[Staging.PatientManagementTab.openPatientAndNavigateToManagementTab() on instance Staging.PatientManagementTab@18ce0030]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 22 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+</body>
+</html>

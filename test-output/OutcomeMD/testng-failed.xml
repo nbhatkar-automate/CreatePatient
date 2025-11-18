@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [OutcomeMD]" guice-stage="DEVELOPMENT">
+  <test thread-count="5" name="PatientCreation(failed)">
+    <classes>
+      <class name="Staging.PatientCreate">
+        <methods>
+          <include name="selectRace"/>
+          <include name="selectEthnicity"/>
+          <include name="selectSex"/>
+          <include name="clickAddButton"/>
+          <include name="selectGender"/>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- Staging.PatientCreate -->
+    </classes>
+  </test> <!-- PatientCreation(failed) -->
+</suite> <!-- Failed suite [OutcomeMD] -->
