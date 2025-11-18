@@ -59,7 +59,7 @@ public class PatientManagementTab {
 
     @Test(dependsOnMethods = "openPatientAndNavigateToManagementTab", priority = 2)
     public void addTask() {
-        By addTask = By.xpath("//div[contains(@class,'add-item') and contains(., 'Add Task')]");
+        By addTask = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[contains(@class,'add-item') and contains(., 'Add Task')]")));
 
         StableUtils.clickWithRetries(driver, wait, addTask);
 
