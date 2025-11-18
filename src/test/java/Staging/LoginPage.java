@@ -18,8 +18,8 @@ public class LoginPage {
     @Test
     public void loginTest() {
 
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
+       ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless=new");
         options.addArguments("--window-size=1920,1080");
         options.addArguments("--disable-gpu");
         options.addArguments("--no-sandbox");
@@ -29,9 +29,13 @@ public class LoginPage {
         options.addArguments("--force-device-scale-factor=1");
         options.addArguments("--enable-features=NetworkService,NetworkServiceInProcess");
         options.addArguments("--whitelisted-ips=''");
-        
+        options.addArguments("--disable-blink-features=AutomationControlled");
+        options.addArguments("--remote-allow-origins=*");
+        options.addArguments("--disable-site-isolation-trials");
+
         driver = new ChromeDriver(options);
-        wait = new WebDriverWait(driver, Duration.ofSeconds(60));
+        wait = new WebDriverWait(driver, Duration.ofSeconds(120));
+
         
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
