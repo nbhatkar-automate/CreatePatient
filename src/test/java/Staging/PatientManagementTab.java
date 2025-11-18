@@ -41,9 +41,9 @@ public class PatientManagementTab {
         By openPatient = By.xpath("//*[@id=\"main-contents\"]/div/div/div/div[2]/div/div/div[1]/span[2]/span[2]");
         StableUtils.clickWithRetries(driver, wait, openPatient);
 
-        By managementTab = By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[1]/span[3]");
+        By managementTab = By.xpath("//span[contains(text(),'Management')]");
         StableUtils.clickWithRetries(driver, wait, managementTab);
-
+        
         System.out.println("Navigated to Management Tab");
     }
 
