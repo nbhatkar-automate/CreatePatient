@@ -110,9 +110,11 @@ public class PatientCreate {
         scrollIntoView(dropdown);
         dropdown.click();
 
-        WebElement option = wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[6]/div[2]/div[2]/div[4]")));
+        WebElement option = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='option' and normalize-space()='unknown']")));
 
+        wait.until(ExpectedConditions.visibilityOf(option));
+        wait.until(ExpectedConditions.elementToBeClickable(option));
+        
         scrollIntoView(option);
         option.click();
     }
