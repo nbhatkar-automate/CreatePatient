@@ -102,7 +102,7 @@ public class PatientCreate {
     }
 
     /** Select Sex */
-   @Test
+    @Test
     public void selectSex() {
         WebElement dropdown = wait.until(ExpectedConditions.elementToBeClickable(
                 By.cssSelector("#app-component > div.modal > div.modal-box-container > div > div.patient-add-form.mobile > div.patient-add-long > div.patient-long-form.patient-add-long > div > div:nth-child(6) > div.custom-select-container > div.custom-select")));
