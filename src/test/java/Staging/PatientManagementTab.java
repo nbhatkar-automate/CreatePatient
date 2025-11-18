@@ -50,8 +50,6 @@ public class PatientManagementTab {
         System.out.println("Navigated to Management Tab");
 }
 
-    }
-
     @Test(dependsOnMethods = "openPatientAndNavigateToManagementTab", priority = 2)
     public void addTask() {
         By addTask = By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[2]/div/div/div/div[1]/div[2]");
