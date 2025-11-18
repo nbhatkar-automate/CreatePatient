@@ -38,16 +38,23 @@ public class PatientManagementTab {
 
        @Test(dependsOnMethods = "Staging.PatientCreate.clickAddButton", priority = 1)
         public void openPatientAndNavigateToManagementTab() {
-    
-        // STABLE + HEADLESS SAFE → Always works even if DOM changes
-        By openPatient = By.xpath("//span[contains(text(),'Open') or contains(text(),'View')]");
-        StableUtils.clickWithRetries(driver, wait, openPatient);
-    
-        // Stable selector for Management Tab
-        By managementTab = By.xpath("//span[contains(text(),'Management')]");
-        StableUtils.clickWithRetries(driver, wait, managementTab);
-    
-        System.out.println("Navigated to Management Tab");
+
+    By openOrView = By.xpath("//span[contains(translate(text(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'open') or contains(translate(text(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'view')]");
+
+    WebElement button = WaitUtils.waitForPresence(driver, openOrView);
+
+    ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", button);
+    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", button);
+
+    System.out.println("Patient opened successfully");
+
+    By managementTab = By.xpath("//span[contains(text(), 'Management')]");
+    WebElement tab = WaitUtils.waitForPresence(driver, managementTab);
+
+    ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", tab);
+    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", tab);
+
+    System.out.println("Navigated to Management Tab");
 }
 
     @Test(dependsOnMethods = "openPatientAndNavigateToManagementTab", priority = 2)
