@@ -103,21 +103,29 @@ public class PatientCreate {
 
     /** Select Sex */
     @Test
-    public void selectSex() {
-        WebElement dropdown = wait.until(ExpectedConditions.elementToBeClickable(
-                By.cssSelector("#app-component > div.modal > div.modal-box-container > div > div.patient-add-form.mobile > div.patient-add-long > div.patient-long-form.patient-add-long > div > div:nth-child(6) > div.custom-select-container > div.custom-select")));
+public void selectSex() {
 
-        scrollIntoView(dropdown);
-        dropdown.click();
+    // Click the dropdown
+    WebElement dropdown = wait.until(ExpectedConditions.elementToBeClickable(
+            By.xpath("//label[contains(text(), 'Sex')]/following::div[contains(@class,'custom-select')][1]")));
+    scrollIntoView(dropdown);
+    dropdown.click();
 
-        WebElement option = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='option' and normalize-space()='unknown']")));
+    // Wait for dropdown list to appear
+    wait.until(ExpectedConditions.visibilityOfElementLocated(
+            By.xpath("//div[contains(@class,'custom-options')]")));
 
-        wait.until(ExpectedConditions.visibilityOf(option));
-        wait.until(ExpectedConditions.elementToBeClickable(option));
-        
-        scrollIntoView(option);
-        option.click();
-    }
+    // Load the option safely
+    WebElement option = wait.until(ExpectedConditions.visibilityOfElementLocated(
+            By.xpath("//div[@class='option' and normalize-space()='unknown']")));
+
+    // Scroll into view
+    ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", option);
+
+    // Final safe click (JS click → headless safe)
+    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", option);
+}
+
 
     /** Select Gender */
     @Test(dependsOnMethods = "selectSex")
