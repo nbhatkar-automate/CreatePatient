@@ -102,30 +102,23 @@ public class PatientCreate {
     }
 
     /** Select Sex */
-    @Test
-public void selectSex() {
+ public void selectSex(String value) {
+    By sexDropdown = By.xpath("//label[contains(text(), 'Sex')]/following::div[contains(@class,'custom-select')][1]");
+    WaitUtils.waitForPresence(driver, sexDropdown);
+    WebElement dropdown = driver.findElement(sexDropdown);
 
-    // Click the dropdown
-    WebElement dropdown = wait.until(ExpectedConditions.elementToBeClickable(
-            By.xpath("//label[contains(text(), 'Sex')]/following::div[contains(@class,'custom-select')][1]")));
-    scrollIntoView(dropdown);
-    dropdown.click();
+    ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", dropdown);
+    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", dropdown);
 
-    // Wait for dropdown list to appear
-    wait.until(ExpectedConditions.visibilityOfElementLocated(
-            By.xpath("//div[contains(@class,'custom-options')]")));
+    By option = By.xpath("//div[@class='option' and normalize-space()='" + value + "']");
+    WaitUtils.waitForPresence(driver, option);
 
-    // Load the option safely
-    WebElement option = wait.until(ExpectedConditions.visibilityOfElementLocated(
-            By.xpath("//div[@class='option' and normalize-space()='unknown']")));
+    WebElement sexOption = driver.findElement(option);
+    ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", sexOption);
+    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", sexOption);
 
-    // Scroll into view
-    ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", option);
-
-    // Final safe click (JS click → headless safe)
-    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", option);
+    System.out.println("Sex selected: " + value);
 }
-
 
     /** Select Gender */
     @Test(dependsOnMethods = "selectSex")
