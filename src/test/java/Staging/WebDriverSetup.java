@@ -6,14 +6,13 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 public class WebDriverSetup {
 
-    private static WebDriver driver;
+    public static WebDriver driver;
 
     public static WebDriver getDriver(ChromeOptions options) {
 
         if (driver == null) {
             driver = new ChromeDriver(options);
         }
-
         return driver;
     }
 
