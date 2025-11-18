@@ -6,25 +6,21 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 public class WebDriverSetup {
 
-    public static WebDriver getDriver() {
+    private static WebDriver driver;
 
-        ChromeOptions options = new ChromeOptions();
+    public static WebDriver getDriver(ChromeOptions options) {
 
-        // Important for Jenkins/Linux:
-        options.addArguments("--no-sandbox");
-        options.addArguments("--disable-dev-shm-usage");
-        options.addArguments("--disable-gpu");
-        options.addArguments("--headless=new");
-        options.addArguments("--window-size=1920,1080");
+        if (driver == null) {
+            driver = new ChromeDriver(options);
+        }
 
-        // Disable automation banners
-        options.addArguments("--disable-blink-features=AutomationControlled");
-
-        // Disable infobars
-        options.addArguments("disable-infobars");
-
-        WebDriver driver = new ChromeDriver(options);
-        driver.manage().window().maximize();
         return driver;
+    }
+
+    public static void quitDriver() {
+        if (driver != null) {
+            driver.quit();
+            driver = null;
+        }
     }
 }
