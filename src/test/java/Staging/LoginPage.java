@@ -3,8 +3,10 @@ package Staging;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.*;
-import org.testng.annotations.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.Test;
+
 import java.time.Duration;
 
 public class LoginPage {
@@ -16,31 +18,28 @@ public class LoginPage {
     public void loginTest() {
 
         ChromeOptions options = new ChromeOptions();
-
-        // 🔥 FIXED HEADLESS for Jenkins
-        options.addArguments("--headless=chrome");
+        options.addArguments("--headless=new");
         options.addArguments("--window-size=1920,1080");
         options.addArguments("--disable-gpu");
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
-
-        // Smooth stability options
+        options.addArguments("--disable-search-engine-choice-screen");
+        options.addArguments("--start-maximized");
+        options.addArguments("--force-device-scale-factor=1");
+        options.addArguments("--enable-features=NetworkService,NetworkServiceInProcess");
+        options.addArguments("--whitelisted-ips=''");
         options.addArguments("--disable-blink-features=AutomationControlled");
         options.addArguments("--remote-allow-origins=*");
         options.addArguments("--disable-site-isolation-trials");
 
-        // DRIVER INIT
-        driver = WebDriverSetup.getDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        wait = new WebDriverWait(driver, Duration.ofSeconds(120));
+        // 100% Correct Fix:
+        driver = WebDriverSetup.getDriver(options);
 
-        // OPEN URL
+        wait = new WebDriverWait(driver, Duration.ofSeconds(120));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+
         driver.get("https://stagingportal.outcomemd.com/");
 
-        // PRINT PAGE SOURCE if login page fails (Debug)
-        System.out.println("PAGE TITLE: " + driver.getTitle());
-
-        // LOGIN FLOW
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@placeholder='Email']")))
                 .sendKeys("nbhatkar@outcomemd.com");
 
