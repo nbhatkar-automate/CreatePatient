@@ -21,6 +21,11 @@ public class WaitUtils {
                 .until(ExpectedConditions.elementToBeClickable(locator));
     }
 
+    public static WebElement waitForPresence(WebDriver driver, By locator) {
+        return new WebDriverWait(driver, Duration.ofSeconds(30))
+                .until(ExpectedConditions.presenceOfElementLocated(locator));
+    }
+
     public static void scrollIntoView(WebDriver driver, WebElement element) {
         ((JavascriptExecutor) driver)
                 .executeScript("arguments[0].scrollIntoView(true);", element);
