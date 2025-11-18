@@ -103,24 +103,19 @@ public class PatientCreate {
 
     /** Select Sex */
    @Test
-public void selectSex() {
+    public void selectSex() {
+        WebElement dropdown = wait.until(ExpectedConditions.elementToBeClickable(
+                By.cssSelector("#app-component > div.modal > div.modal-box-container > div > div.patient-add-form.mobile > div.patient-add-long > div.patient-long-form.patient-add-long > div > div:nth-child(6) > div.custom-select-container > div.custom-select")));
 
-    // Open dropdown
-    By dropdownXpath = By.xpath("//label[contains(text(),'Sex')]/following::div[contains(@class,'custom-select')][1]");
-    WebElement dropdown = wait.until(ExpectedConditions.elementToBeClickable(dropdownXpath));
+        scrollIntoView(dropdown);
+        dropdown.click();
 
-    ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", dropdown);
-    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", dropdown);
+        WebElement option = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[6]/div[2]/div[2]/div[4]")));
 
-    // Select option by visible text (NO index)
-    By optionXpath = By.xpath("//div[@class='option' and text()='Male']");
-    WebElement option = wait.until(ExpectedConditions.elementToBeClickable(optionXpath));
-
-    ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", option);
-    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", option);
-
-    System.out.println("Sex selected: Male");
-}
+        scrollIntoView(option);
+        option.click();
+    }
 
     /** Select Gender */
     @Test(dependsOnMethods = "selectSex")
