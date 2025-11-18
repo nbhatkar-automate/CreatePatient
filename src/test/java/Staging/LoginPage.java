@@ -19,18 +19,25 @@ public class LoginPage {
     public void loginTest() {
 
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless=new");
+        options.addArguments("--headless");
         options.addArguments("--window-size=1920,1080");
         options.addArguments("--disable-gpu");
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
-
+        options.addArguments("--disable-search-engine-choice-screen");
+        options.addArguments("--start-maximized");
+        options.addArguments("--force-device-scale-factor=1");
+        options.addArguments("--enable-features=NetworkService,NetworkServiceInProcess");
+        options.addArguments("--whitelisted-ips=''");
+        
         driver = new ChromeDriver(options);
         wait = new WebDriverWait(driver, Duration.ofSeconds(60));
-
+        
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.get("https://stagingportal.outcomemd.com/");
+
+
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@placeholder='Email']")))
                 .sendKeys("nbhatkar@outcomemd.com");
