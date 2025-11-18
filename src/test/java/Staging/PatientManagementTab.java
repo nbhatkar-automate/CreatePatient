@@ -59,7 +59,7 @@ public class PatientManagementTab {
 
     @Test(dependsOnMethods = "openPatientAndNavigateToManagementTab", priority = 2)
     public void addTask() {
-        By addTask = By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[2]/div/div/div/div[1]/div[2]");
+        By addTask = By.xpath("//div[@class='add-item' and contains(text(), 'Add Task')]");
         StableUtils.clickWithRetries(driver, wait, addTask);
 
         By titleInput = By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/input");
