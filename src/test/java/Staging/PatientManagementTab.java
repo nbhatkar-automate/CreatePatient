@@ -59,9 +59,9 @@ public class PatientManagementTab {
 
     @Test(dependsOnMethods = "openPatientAndNavigateToManagementTab", priority = 2)
     public void addTask() {
-        By addTask = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[contains(@class,'add-item') and contains(., 'Add Task')]")));
+    WebElement addTask = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class='add-item global-clickable']")));
+    addTask.click();
 
-        StableUtils.clickWithRetries(driver, wait, addTask);
 
         By titleInput = By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/input");
         StableUtils.sendKeysWithRetries(driver, wait, titleInput, "Filled Via Automation");
