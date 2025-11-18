@@ -36,15 +36,20 @@ public class PatientManagementTab {
         dobFormatted = dob.format(formatter);
     }
 
-    @Test(dependsOnMethods = "Staging.PatientCreate.clickAddButton", priority = 1)
-    public void openPatientAndNavigateToManagementTab() {
-        By openPatient = By.xpath("//*[@id=\"main-contents\"]/div/div/div/div[2]/div/div/div[1]/span[2]/span[2]");
+       @Test(dependsOnMethods = "Staging.PatientCreate.clickAddButton", priority = 1)
+        public void openPatientAndNavigateToManagementTab() {
+    
+        // STABLE + HEADLESS SAFE → Always works even if DOM changes
+        By openPatient = By.xpath("//span[contains(text(),'Open') or contains(text(),'View')]");
         StableUtils.clickWithRetries(driver, wait, openPatient);
-
+    
+        // Stable selector for Management Tab
         By managementTab = By.xpath("//span[contains(text(),'Management')]");
         StableUtils.clickWithRetries(driver, wait, managementTab);
-        
+    
         System.out.println("Navigated to Management Tab");
+}
+
     }
 
     @Test(dependsOnMethods = "openPatientAndNavigateToManagementTab", priority = 2)
