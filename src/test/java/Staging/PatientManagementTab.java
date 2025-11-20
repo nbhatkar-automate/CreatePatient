@@ -21,6 +21,11 @@ public class PatientManagementTab {
     static WebDriver driver;
     static WebDriverWait wait;
     String dobFormatted;
+    
+    // sharing for next class
+    public static WebDriver sharedDriver;
+    public static WebDriverWait sharedWait;
+
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
@@ -44,7 +49,7 @@ public class PatientManagementTab {
                 By.xpath("//*[@id=\"main-contents\"]/div/div/div/div[2]/div/div/div[1]/span[2]/span[2]"))).click();
 
         // Navigate to Management Tab
-        WebElement ManagementTab = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[1]/span[3]")));
+        WebElement ManagementTab = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[1]/span[3]")));
         ManagementTab.click();
         System.out.println("Navigated to Management Tab");
     }
@@ -53,10 +58,10 @@ public class PatientManagementTab {
     public void addTask() {
         // Click add task
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[2]/div/div/div/div[1]/div[2]"))).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/input"))).sendKeys("Filled Via Automation");
-        WebElement dateInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[6]/div[2]/input")));
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/input"))).sendKeys("Filled Via Automation");
+        WebElement dateInput = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[6]/div[2]/input")));
         ((JavascriptExecutor) driver).executeScript("arguments[0]._flatpickr.setDate('" + dobFormatted + "', true);", dateInput);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[7]/div[2]/div/div[2]/div[1]"))).sendKeys("Automated Comment");
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[7]/div[2]/div/div[2]/div[1]"))).sendKeys("Automated Comment");
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[8]/button"))).click();
         System.out.println("Task Added in Management Tab");
     }
@@ -73,7 +78,7 @@ public class PatientManagementTab {
 
   // Step 3: Now continue to click "Add Note"
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[2]/div/div/div/div[2]/div[2]"))).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/div[2]/div/div[2]/div[1]"))).sendKeys("Automated Note");
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/div[2]/div/div[2]/div[1]"))).sendKeys("Automated Note");
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[4]/button"))).click();
          System.out.println("Note Added in Management Tab");
         }
@@ -99,7 +104,7 @@ public class PatientManagementTab {
         ))).click();
 
         // Step 5: Wait for modal to appear
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
             "//*[@id=\"app-component\"]/div[1]/div[2]/div"
         )));
 
@@ -132,7 +137,7 @@ public class PatientManagementTab {
         ).click();
 
         // Type "Syrup" into the search box
-        WebElement searchBox = wait.until(ExpectedConditions.visibilityOfElementLocated(
+        WebElement searchBox = wait.until(ExpectedConditions.elementToBeClickable(
             By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[1]/div[2]/input")));
         searchBox.sendKeys("Syrup");  // replaced JS with standard Selenium typing
         searchBox.click();
@@ -164,11 +169,11 @@ public class PatientManagementTab {
         }
 
         // Set Start Date
-        WebElement startdate = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[4]/div[2]/input")));
+        WebElement startdate = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[4]/div[2]/input")));
         ((JavascriptExecutor) driver).executeScript("arguments[0]._flatpickr.setDate('" + dobFormatted + "', true);", startdate);
 
         // Set Stop Date
-        WebElement stopdate = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[5]/div[2]/input")));
+        WebElement stopdate = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[5]/div[2]/input")));
         ((JavascriptExecutor) driver).executeScript("arguments[0]._flatpickr.setDate('" + dobFormatted + "', true);", stopdate);
 
         // Click Save
@@ -191,9 +196,9 @@ public class PatientManagementTab {
         
   // Step 3: Now continue to click "Add Diagnosis"
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[2]/div/div/div/div[5]/div[2]/div[1]/div/div/div[2]"))).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[1]/span[2]/input"))).sendKeys("test");
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[1]/span[2]/input"))).sendKeys("test");
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/button"))).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]")));
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]")));
 
         try {
             wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/ul/li[4]"))).click();
@@ -237,11 +242,11 @@ public class PatientManagementTab {
             }
         }
 
-        WebElement startdate = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"datepicker\"]/input")));
+        WebElement startdate = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"datepicker\"]/input")));
         ((JavascriptExecutor) driver).executeScript("arguments[0]._flatpickr.setDate('" + dobFormatted + "', true);", startdate);
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"subProcedures\"]"))).sendKeys("Automated SubFilter");
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"proc_notes\"]"))).sendKeys("Automated Notes");
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"subProcedures\"]"))).sendKeys("Automated SubFilter");
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"proc_notes\"]"))).sendKeys("Automated Notes");
 
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/form/div[6]/div[2]/div"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/form/div[8]/button"))).click();
@@ -262,7 +267,7 @@ public class PatientManagementTab {
 
         // Type the filter text
         String filterText = "Automated Filter";
-        WebElement filterInput = wait.until(ExpectedConditions.visibilityOfElementLocated(
+        WebElement filterInput = wait.until(ExpectedConditions.elementToBeClickable(
             By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[1]/div[2]/input")
         ));
         filterInput.clear();
@@ -301,10 +306,14 @@ public class PatientManagementTab {
             }
         }
 
-        WebElement startdate = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/input")));
+        WebElement startdate = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/input")));
         ((JavascriptExecutor) driver).executeScript("arguments[0]._flatpickr.setDate('" + dobFormatted + "', true);", startdate);
 
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/div/button"))).click();
         System.out.println("AdHOC Filter Added in Management Tab");
+        
+        // sharing for next class
+        sharedDriver = driver;
+        sharedWait = wait;
         }
 }
