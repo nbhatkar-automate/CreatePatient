@@ -12,6 +12,9 @@ public class SurveySend {
 
 	public static WebDriver driver;
 	public static WebDriverWait wait;
+// Safety check
+if (driver == null || wait == null) {
+    throw new RuntimeException("Driver/WAIΤ not received from PatientManagementTab");
 	
     @Test
     public void AddToCart() throws InterruptedException {
