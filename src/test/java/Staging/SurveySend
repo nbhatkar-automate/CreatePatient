@@ -12,9 +12,6 @@ public class SurveySend {
 
 	public static WebDriver driver;
 	public static WebDriverWait wait;
-// Safety check
-if (driver == null || wait == null) {
-    throw new RuntimeException("Driver/WAIΤ not received from PatientManagementTab");
 	
     @Test
     public void AddToCart() throws InterruptedException {
@@ -22,6 +19,10 @@ if (driver == null || wait == null) {
         // Reuse driver & wait after PatientManagementTab finishes
         driver = PatientManagementTab.sharedDriver;
         wait = PatientManagementTab.sharedWait;
+
+// Safety check
+if (driver == null || wait == null) {
+    throw new RuntimeException("Driver/WAIΤ not received from PatientManagementTab");
 
         WebElement addBtn = wait.until(
         	    ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='main-contents']/div/div/div/div/div[5]/div[1]/span[1]/div[2]")));
