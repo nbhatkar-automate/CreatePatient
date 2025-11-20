@@ -20,10 +20,6 @@ public class SurveySend {
         driver = PatientManagementTab.sharedDriver;
         wait = PatientManagementTab.sharedWait;
 
-// Safety check
-if (driver == null || wait == null) {
-    throw new RuntimeException("Driver/WAIΤ not received from PatientManagementTab");
-
         WebElement addBtn = wait.until(
         	    ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='main-contents']/div/div/div/div/div[5]/div[1]/span[1]/div[2]")));
 
