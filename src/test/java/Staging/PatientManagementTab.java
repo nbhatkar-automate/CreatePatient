@@ -7,7 +7,6 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -21,18 +20,13 @@ public class PatientManagementTab {
     static WebDriver driver;
     static WebDriverWait wait;
     String dobFormatted;
-    
-    // sharing for next class
-    public static WebDriver sharedDriver;
-    public static WebDriverWait sharedWait;
-
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void setup() {
         driver = PatientCreate.driver;
-        wait = PatientCreate.wait;
+        wait = new WebDriverWait(driver, java.time.Duration.ofSeconds(60));
 
         // Generate random DOB
         int year = 2000 + new java.util.Random().nextInt(25);
@@ -42,110 +36,104 @@ public class PatientManagementTab {
         dobFormatted = dob.format(formatter);
     }
 
-    @Test(dependsOnMethods = "Staging.PatientCreate.clickAddButton", priority = 1)
-    public void openPatientAndNavigateToManagementTab() {
-        // Open patient profile
-        wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//*[@id=\"main-contents\"]/div/div/div/div[2]/div/div/div[1]/span[2]/span[2]"))).click();
+       @Test(dependsOnMethods = "Staging.PatientCreate.clickAddButton", priority = 1)
+        public void openPatientAndNavigateToManagementTab() {
 
-        // Navigate to Management Tab
-        WebElement ManagementTab = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[1]/span[3]")));
-        ManagementTab.click();
-        System.out.println("Navigated to Management Tab");
-    }
-    
+    By openOrView = By.xpath("//span[contains(translate(text(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'open') or contains(translate(text(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'view')]");
+
+    WebElement button = WaitUtils.waitForPresence(driver, openOrView);
+
+    ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", button);
+    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", button);
+
+    System.out.println("Patient opened successfully");
+
+    By managementTab = By.xpath("//span[contains(text(), 'Management')]");
+    WebElement tab = WaitUtils.waitForPresence(driver, managementTab);
+
+    ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", tab);
+    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", tab);
+
+    System.out.println("Navigated to Management Tab");
+}
+
     @Test(dependsOnMethods = "openPatientAndNavigateToManagementTab", priority = 2)
     public void addTask() {
-        // Click add task
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[2]/div/div/div/div[1]/div[2]"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/input"))).sendKeys("Filled Via Automation");
-        WebElement dateInput = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[6]/div[2]/input")));
-        ((JavascriptExecutor) driver).executeScript("arguments[0]._flatpickr.setDate('" + dobFormatted + "', true);", dateInput);
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[7]/div[2]/div/div[2]/div[1]"))).sendKeys("Automated Comment");
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[8]/button"))).click();
+    WebElement addTask = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class='add-item global-clickable']")));
+    addTask.click();
+
+
+        By titleInput = By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/input");
+        StableUtils.sendKeysWithRetries(driver, wait, titleInput, "Filled Via Automation");
+
+        By dateInput = By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[6]/div[2]/input");
+        StableUtils.setFlatpickrDate(driver, wait, dateInput, dobFormatted);
+
+        By commentInput = By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[7]/div[2]/div/div[2]/div[1]");
+        StableUtils.sendKeysWithRetries(driver, wait, commentInput, "Automated Comment");
+
+        By saveBtn = By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[8]/button");
+        StableUtils.clickWithRetries(driver, wait, saveBtn);
+
         System.out.println("Task Added in Management Tab");
     }
 
     @Test(dependsOnMethods = "addTask", priority = 3)
     public void addPatientNote() {
-    // Step 1: Send ESCAPE to close floating datepicker
-        Actions actions = new Actions(driver);
-        actions.sendKeys(Keys.ESCAPE).perform();
- 
-   // Step 2: Wait until datepicker input is no longer visible
-        WebElement floatingInput = driver.findElement(By.xpath("//input[contains(@class, 'flatpickr-input')]"));
-        wait.until(ExpectedConditions.invisibilityOf(floatingInput));
+        // Close any floating datepicker by sending ESC
+        new Actions(driver).sendKeys(Keys.ESCAPE).perform();
+        // wait until any flatpickr input becomes invisible (safe)
+        StableUtils.waitForNoFlatpickr(driver, wait);
 
-  // Step 3: Now continue to click "Add Note"
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[2]/div/div/div/div[2]/div[2]"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/div[2]/div/div[2]/div[1]"))).sendKeys("Automated Note");
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[4]/button"))).click();
-         System.out.println("Note Added in Management Tab");
-        }
+        By addNote = By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[2]/div/div/div/div[2]/div[2]");
+        StableUtils.clickWithRetries(driver, wait, addNote);
 
+        By noteInput = By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/div[2]/div/div[2]/div[1]");
+        StableUtils.sendKeysWithRetries(driver, wait, noteInput, "Automated Note");
+
+        By saveNote = By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[4]/button");
+        StableUtils.clickWithRetries(driver, wait, saveNote);
+
+        System.out.println("Note Added in Management Tab");
+    }
 
     @Test(dependsOnMethods = "addPatientNote", priority = 4)
     public void addCallLogEntry() throws InterruptedException {
-        Actions actions = new Actions(driver);
+        new Actions(driver).sendKeys(Keys.ESCAPE).perform();
+        Thread.sleep(1000);
 
-        // Step 1: Press ESC to close overlay
-        actions.sendKeys(Keys.ESCAPE).perform();
-        Thread.sleep(2000);  // Let the UI respond
-
-     // Scroll down slightly (100 pixels) to reveal the call log checkbox
         ((JavascriptExecutor) driver).executeScript("window.scrollBy(0, 200);");
-        
-     // Wait until modal background disappears (invisible)
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".modal-background")));
+        StableUtils.waitForInvisibility(driver, wait, By.cssSelector(".modal-background"));
 
-        // Step 4: Open Call Log modal
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
-            "//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[2]/div/div/div/div[3]/div[1]/input"
-        ))).click();
+        By callLogOpen = By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[2]/div/div/div/div[3]/div[1]/input");
+        StableUtils.clickWithRetries(driver, wait, callLogOpen);
 
-        // Step 5: Wait for modal to appear
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
-            "//*[@id=\"app-component\"]/div[1]/div[2]/div"
-        )));
+        // wait for modal to appear (xpath unchanged)
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div")));
 
-        // Step 6: Enter Text
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[4]/div/div[2]/div[1]"))).sendKeys("Automated Entry");
+        By callText = By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[4]/div/div[2]/div[1]");
+        StableUtils.sendKeysWithRetries(driver, wait, callText, "Automated Entry");
 
-        // Step 7: Click submit
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
-            "//*[@id=\"app-component\"]/div[1]/div[2]/div/div[5]/button"
-        ))).click();
-        
+        By callSubmit = By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[5]/button");
+        StableUtils.clickWithRetries(driver, wait, callSubmit);
 
-        // Step 9: Wait for modal to close
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(
-            "//*[@id=\"app-component\"]/div[1]/div[2]/div"
-        )));
+        StableUtils.waitForInvisibility(driver, wait, By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div"));
 
         System.out.println("Call Log Entry Added in Management Tab");
     }
 
     @Test(dependsOnMethods = "addCallLogEntry", priority = 5)
     public void addMedications() throws InterruptedException {
-
-        // Scroll slightly
         ((JavascriptExecutor) driver).executeScript("window.scrollBy(0, 200);");
 
-        // Click "Add Medications"
-        wait.until(ExpectedConditions.elementToBeClickable(
-            By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[2]/div/div/div/div[4]/div[2]/div[1]/div/div/div[2]/img"))
-        ).click();
+        By addMed = By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[2]/div/div/div/div[4]/div[2]/div[1]/div/div/div[2]/img");
+        StableUtils.clickWithRetries(driver, wait, addMed);
 
-        // Type "Syrup" into the search box
-        WebElement searchBox = wait.until(ExpectedConditions.elementToBeClickable(
-            By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[1]/div[2]/input")));
-        searchBox.sendKeys("Syrup");  // replaced JS with standard Selenium typing
-        searchBox.click();
+        By searchBox = By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[1]/div[2]/input");
+        StableUtils.sendKeysWithRetries(driver, wait, searchBox, "Syrup");
+        StableUtils.clickWithRetries(driver, wait, searchBox);
 
-        // Wait 2-3 seconds for suggestions to appear (adjust if needed)
-        Thread.sleep(3000);
-
-        // Now get suggestions safely
+        Thread.sleep(2000); // allow suggestions to populate
         List<WebElement> suggestions = driver.findElements(By.cssSelector(".selection-list .selection-item"));
 
         if (suggestions.isEmpty()) {
@@ -153,62 +141,54 @@ public class PatientManagementTab {
         }
 
         boolean found = false;
-
         for (WebElement suggestion : suggestions) {
             String text = suggestion.getText().toLowerCase().trim();
-            System.out.println("SUGGESTION: " + text);
             if (text.contains("panatuss")) {
-                suggestion.click();  // replaced JS click with standard Selenium click
+                StableUtils.clickElementViaJS(driver, suggestion); // fallback click
                 found = true;
                 break;
             }
         }
 
         if (!found) {
-            throw new RuntimeException("'Syrup' not found in suggestions.");
+            throw new RuntimeException("'Syrup' suggestion with 'panatuss' not found.");
         }
 
-        // Set Start Date
-        WebElement startdate = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[4]/div[2]/input")));
-        ((JavascriptExecutor) driver).executeScript("arguments[0]._flatpickr.setDate('" + dobFormatted + "', true);", startdate);
+        // Start/Stop dates
+        By startdate = By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[4]/div[2]/input");
+        By stopdate  = By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[5]/div[2]/input");
+        StableUtils.setFlatpickrDate(driver, wait, startdate, dobFormatted);
+        StableUtils.setFlatpickrDate(driver, wait, stopdate, dobFormatted);
 
-        // Set Stop Date
-        WebElement stopdate = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[5]/div[2]/input")));
-        ((JavascriptExecutor) driver).executeScript("arguments[0]._flatpickr.setDate('" + dobFormatted + "', true);", stopdate);
-
-        // Click Save
-        wait.until(ExpectedConditions.elementToBeClickable(
-            By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/div[2]/button"))).click();
+        By saveMed = By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/div[2]/button");
+        StableUtils.clickWithRetries(driver, wait, saveMed);
 
         System.out.println("Medication Added in Management Tab");
     }
 
-
     @Test(dependsOnMethods = "addMedications", priority = 6)
     public void addDiagnosis() {
-    // Step 1: Send ESCAPE to close floating datepicker
-        Actions actions = new Actions(driver);
-        actions.sendKeys(Keys.ESCAPE).perform();
- 
-   // Step 2: Wait until datepicker input is no longer visible
-        WebElement floatingInput = driver.findElement(By.xpath("//input[contains(@class, 'flatpickr-input')]"));
-        wait.until(ExpectedConditions.invisibilityOf(floatingInput));
-        
-  // Step 3: Now continue to click "Add Diagnosis"
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[2]/div/div/div/div[5]/div[2]/div[1]/div/div/div[2]"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[1]/span[2]/input"))).sendKeys("test");
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/button"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]")));
+        new Actions(driver).sendKeys(Keys.ESCAPE).perform();
+        StableUtils.waitForNoFlatpickr(driver, wait);
 
+        By addDiag = By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[2]/div/div/div/div[5]/div[2]/div[1]/div/div/div[2]");
+        StableUtils.clickWithRetries(driver, wait, addDiag);
+
+        By diagInput = By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[1]/span[2]/input");
+        StableUtils.sendKeysWithRetries(driver, wait, diagInput, "test");
+
+        By diagSave = By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/button");
+        StableUtils.clickWithRetries(driver, wait, diagSave);
+
+        // Try suggestions then "Add New" fallback (xpaths unchanged)
         try {
-            wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/ul/li[4]"))).click();
+            StableUtils.clickWithRetries(driver, wait, By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/ul/li[4]"));
             System.out.println("Diagnosis selected from suggestions.");
-        } catch (TimeoutException e) {
-            System.out.println("No suggestion found. Attempting to click 'Add New'...");
+        } catch (Exception e) {
             try {
-                wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/ul/li[1]"))).click();
+                StableUtils.clickWithRetries(driver, wait, By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/ul/li[1]"));
                 System.out.println("'Add New' option clicked for diagnosis.");
-            } catch (TimeoutException ex) {
+            } catch (Exception ex) {
                 System.out.println("Neither suggestion nor 'Add New' option found.");
             }
         }
@@ -218,102 +198,80 @@ public class PatientManagementTab {
 
     @Test(dependsOnMethods = "addDiagnosis", priority = 7)
     public void addProcedure() {
-    // Step 1: Send ESCAPE to close floating datepicker
-        Actions actions = new Actions(driver);
-        actions.sendKeys(Keys.ESCAPE).perform();
-        
-     // Scroll down slightly (300 pixels) to reveal the call log button
+        new Actions(driver).sendKeys(Keys.ESCAPE).perform();
         ((JavascriptExecutor) driver).executeScript("window.scrollBy(0, 300);");
-        
-   // Step 3: Now continue to click "Add Procedure"
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[2]/div/div/div/div[6]/div[2]/div[1]/div/div/div[2]/span"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/form/div[2]/div/input"))).sendKeys("881");
 
+        By addProc = By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[2]/div/div/div/div[6]/div[2]/div[1]/div/div/div[2]/span");
+        StableUtils.clickWithRetries(driver, wait, addProc);
+
+        By codeInput = By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/form/div[2]/div/input");
+        StableUtils.sendKeysWithRetries(driver, wait, codeInput, "881");
+
+        // Try suggestion then fallback "Add New"
         try {
-            wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/form/div[2]/div[2]/div/div[2]/div[2]/span/span[3]"))).click();
+            StableUtils.clickWithRetries(driver, wait, By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/form/div[2]/div[2]/div/div[2]/div[2]/span/span[3]"));
             System.out.println("Procedure selected from suggestions.");
-        } catch (TimeoutException e) {
-            System.out.println("No suggestion found. Attempting to click 'Add New'...");
+        } catch (Exception e) {
             try {
-                wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/form/div[2]/div[2]/div/div[2]/div[1]/span/span[2]"))).click();
+                StableUtils.clickWithRetries(driver, wait, By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/form/div[2]/div[2]/div/div[2]/div[1]/span/span[2]"));
                 System.out.println("'Add New' option clicked for Procedure.");
-            } catch (TimeoutException ex) {
+            } catch (Exception ex) {
                 System.out.println("Neither suggestion nor 'Add New' option found.");
             }
         }
 
-        WebElement startdate = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"datepicker\"]/input")));
-        ((JavascriptExecutor) driver).executeScript("arguments[0]._flatpickr.setDate('" + dobFormatted + "', true);", startdate);
+        By startdate = By.xpath("//*[@id=\"datepicker\"]/input");
+        StableUtils.setFlatpickrDate(driver, wait, startdate, dobFormatted);
 
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"subProcedures\"]"))).sendKeys("Automated SubFilter");
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"proc_notes\"]"))).sendKeys("Automated Notes");
+        StableUtils.sendKeysWithRetries(driver, wait, By.xpath("//*[@id=\"subProcedures\"]"), "Automated SubFilter");
+        StableUtils.sendKeysWithRetries(driver, wait, By.xpath("//*[@id=\"proc_notes\"]"), "Automated Notes");
 
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/form/div[6]/div[2]/div"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/form/div[8]/button"))).click();
+        StableUtils.clickWithRetries(driver, wait, By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/form/div[6]/div[2]/div"));
+        StableUtils.clickWithRetries(driver, wait, By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/form/div[8]/button"));
+
         System.out.println("Procedure Added in Management Tab");
     }
 
     @Test(dependsOnMethods = "addProcedure", priority = 8)
     public void addFilter() throws InterruptedException {
-   // Step 1: Send ESCAPE to close floating datepicker
-        Actions actions = new Actions(driver);
-        actions.sendKeys(Keys.ESCAPE).perform();
-        
-     // Scroll down slightly (300 pixels) to reveal the call log button
+        new Actions(driver).sendKeys(Keys.ESCAPE).perform();
         ((JavascriptExecutor) driver).executeScript("window.scrollBy(0, 300);");
-        
-     // Step 3: Now continue to click "Add AdHoc Filter"
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[2]/div/div/div/div[8]/div[2]/div[1]/div/div/div[2]/span"))).click();
 
-        // Type the filter text
+        By addFilter = By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[2]/div/div/div/div[8]/div[2]/div[1]/div/div/div[2]/span");
+        StableUtils.clickWithRetries(driver, wait, addFilter);
+
         String filterText = "Automated Filter";
-        WebElement filterInput = wait.until(ExpectedConditions.elementToBeClickable(
-            By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[1]/div[2]/input")
-        ));
-        filterInput.clear();
-        filterInput.sendKeys(filterText);
+        By filterInputPath = By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[1]/div[2]/input");
+        StableUtils.sendKeysWithRetries(driver, wait, filterInputPath, filterText);
 
-        // Wait a short moment for suggestions to load
-        Thread.sleep(500); 
+        Thread.sleep(500);
 
-        // Get all suggestion elements
-        List<WebElement> suggestions = driver.findElements(By.xpath(
-            "//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[2]/div/span/span[2]"
-        ));
+        List<WebElement> suggestions = driver.findElements(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[2]/div/span/span[2]"));
 
-        // Flag to check if filter already exists
         boolean filterFound = false;
-
-        // Loop through suggestions to see if the filter already exists
-        for(WebElement s : suggestions) {
-            if(s.getText().equalsIgnoreCase(filterText)) {
-                s.click();
+        for (WebElement s : suggestions) {
+            if (s.getText().equalsIgnoreCase(filterText)) {
+                StableUtils.clickElementViaJS(driver, s);
                 filterFound = true;
                 System.out.println("Filter selected from suggestions.");
                 break;
             }
         }
 
-        // If filter not found, click "Add New"
-        if(!filterFound) {
+        if (!filterFound) {
             try {
-                wait.until(ExpectedConditions.elementToBeClickable(
-                    By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/span/span")
-                )).click();
+                StableUtils.clickWithRetries(driver, wait, By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/span/span"));
                 System.out.println("'Add New' option clicked for Filter.");
-            } catch (TimeoutException ex) {
+            } catch (Exception ex) {
                 System.out.println("Neither suggestion nor 'Add New' option found.");
             }
         }
 
-        WebElement startdate = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/input")));
-        ((JavascriptExecutor) driver).executeScript("arguments[0]._flatpickr.setDate('" + dobFormatted + "', true);", startdate);
+        By startdate = By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/input");
+        StableUtils.setFlatpickrDate(driver, wait, startdate, dobFormatted);
 
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/div/button"))).click();
+        StableUtils.clickWithRetries(driver, wait, By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/div/button"));
+
         System.out.println("AdHOC Filter Added in Management Tab");
-        
-        // sharing for next class
-        sharedDriver = driver;
-        sharedWait = wait;
-        }
+    }
 }
