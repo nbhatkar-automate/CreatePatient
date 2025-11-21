@@ -10,17 +10,16 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-public class PatientCreate {
-
-    static WebDriver driver;
-    static WebDriverWait wait;
+public class PatientCreate extends BaseClass {   // ★ EXTENDS BASECLASS
 
     String firstName, lastName, email, phone, dobFormatted;
 
     @BeforeClass
-    public void setup() {
-        driver = LoginPage.driver;
-        wait = new WebDriverWait(driver, Duration.ofSeconds(40));
+    public void setupData() {
+
+        // ★ BaseClass already initializes driver + wait, so NO NEW DRIVER
+        driver = BaseClass.driver;
+        wait = BaseClass.wait;
 
         generatePatientData();
         openAddPatientForm();
@@ -53,40 +52,41 @@ public class PatientCreate {
     /** Open Quick Add Patient form + fill basic fields */
     public void openAddPatientForm() {
 
-        // Search box
+        // Search input
         WebElement addPatientInput = wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//input[@placeholder='Search or Add Patient (name, cell, or email)']")));
         addPatientInput.click();
 
-        // Click quick add
+        // Quick add option
         WebElement addNew = wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//div[contains(text(), 'Quick Add New Patient')]")));
         addNew.click();
 
-        // Enter phone
+        // Phone number
         wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[1]/div[1]/div/div[1]/input")))
                 .sendKeys(phone);
 
-        // Click "Fill Out Full Info"
+        // Fill out full info
         WebElement fillFullForm = wait.until(ExpectedConditions.elementToBeClickable(
                 By.cssSelector("#app-component > div.modal > div.modal-box-container > div > div.patient-add-form.mobile > div.patient-add-short > div:nth-child(2) > div.fill-out-text > div")));
+
         scrollIntoView(fillFullForm);
         fillFullForm.click();
 
-        // Enter first name
+        // First name
         driver.findElement(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[1]/input"))
                 .sendKeys(firstName);
 
-        // Enter last name
+        // Last name
         driver.findElement(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[2]/input"))
                 .sendKeys(lastName);
 
-        // Enter email
+        // Email
         driver.findElement(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[3]/input"))
                 .sendKeys(email);
 
-        // DOB (flatpickr)
+        // DOB
         WebElement dateInput = wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.cssSelector("input[placeholder='Date of birth']")));
 
@@ -95,7 +95,6 @@ public class PatientCreate {
 
         sleep(800);
 
-        // Scroll modal into view
         WebElement modalContainer = wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.cssSelector("#app-component > div.modal > div.modal-box-container")));
         scrollIntoView(modalContainer);
@@ -176,17 +175,14 @@ public class PatientCreate {
         scrollIntoView(addBtn);
         addBtn.click();
 
-        // Handle modal if appears
         try {
             WebElement yesButton = wait.until(ExpectedConditions.elementToBeClickable(
                     By.xpath("//button[contains(text(), 'Yes Proceed')]")));
             yesButton.click();
-            System.out.println("Invalid number modal appeared. Clicked 'Yes Proceed'.");
         } catch (Exception e) {
-            System.out.println("No invalid number modal appeared.");
+            // ignore
         }
 
-        // Wait for loader to disappear
         wait.until(ExpectedConditions.invisibilityOfElementLocated(
                 By.xpath("//*[@id='main-contents']/div/div/div/div[4]/div/div[1]/div/div/div/div/img")));
 
