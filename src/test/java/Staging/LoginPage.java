@@ -11,16 +11,13 @@ public class LoginPage extends BaseClass {
 
         driver.get("https://stagingportal.outcomemd.com/");
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//input[@placeholder='Email']")))
+         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@placeholder='Email']")))
                 .sendKeys("nbhatkar@outcomemd.com");
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("input[type='password']")))
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("input[type='password']")))
                 .sendKeys("Staging@1234");
 
-        wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//button[text()='Sign In']")))
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text()='Sign In']")))
                 .click();
 
         System.out.println("Login successful");
