@@ -6,6 +6,7 @@
   <test name="PatientCreation">
    
     <classes>
+      <class name="Staging.BaseClass"/>
       <class name="Staging.LoginPage"/>
      <class name="Staging.PatientCreate"/>
      <class name="Staging.PatientManagementTab"/>
