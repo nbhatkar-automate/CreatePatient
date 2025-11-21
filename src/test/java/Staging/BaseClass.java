@@ -6,6 +6,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
+import java.time.Duration;
+
 public class BaseClass {
 
     public static WebDriver driver;
@@ -13,8 +15,10 @@ public class BaseClass {
 
     @BeforeSuite
     public void startDriver() {
+
         driver = new ChromeDriver();
-        wait = new WebDriverWait(driver, 20);
+        wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
         driver.manage().window().maximize();
         System.out.println("===== DRIVER STARTED (BeforeSuite) =====");
     }
