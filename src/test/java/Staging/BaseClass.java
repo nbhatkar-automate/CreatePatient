@@ -9,7 +9,7 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
 import java.time.Duration;
-import java.io.File;
+import java.io.FileOutputStream;
 
 public class BaseClass {
 
@@ -27,7 +27,7 @@ public class BaseClass {
         options.addArguments("--window-size=1920,1080");
 
         ChromeDriverService service = new ChromeDriverService.Builder()
-                .withLogOutput(new File("chromedriver.log"))
+                .withLogOutput(new FileOutputStream("chromedriver.log"))
                 .withVerbose(true)
                 .build();
 
