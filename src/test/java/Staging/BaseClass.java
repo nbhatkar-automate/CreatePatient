@@ -8,8 +8,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
-import java.time.Duration;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.Duration;
 
 public class BaseClass {
 
@@ -26,10 +27,16 @@ public class BaseClass {
         options.addArguments("--disable-gpu");
         options.addArguments("--window-size=1920,1080");
 
-        ChromeDriverService service = new ChromeDriverService.Builder()
-                .withLogOutput(new FileOutputStream("chromedriver.log"))
-                .withVerbose(true)
-                .build();
+        ChromeDriverService service = null;
+
+        try {
+            service = new ChromeDriverService.Builder()
+                    .withLogOutput(new FileOutputStream("chromedriver.log"))
+                    .withVerbose(true)
+                    .build();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         driver = new ChromeDriver(service, options);
         wait = new WebDriverWait(driver, Duration.ofSeconds(20));
