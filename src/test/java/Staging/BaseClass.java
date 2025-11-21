@@ -1,10 +1,10 @@
 package Staging;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.AfterSuite;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.AfterSuite;
 
 import java.time.Duration;
 
@@ -14,7 +14,7 @@ public class BaseClass {
     public static WebDriverWait wait;
 
     @BeforeSuite
-    public void startDriver() {
+    public void setUp() {
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless=new");
@@ -26,12 +26,12 @@ public class BaseClass {
         driver = WebDriverSetup.getDriver(options);
         wait = new WebDriverWait(driver, Duration.ofSeconds(30));
 
-        System.out.println("===== DRIVER STARTED (BeforeSuite) =====");
+        System.out.println("===== DRIVER STARTED =====");
     }
 
     @AfterSuite
-    public void closeDriver() {
-        System.out.println("===== DRIVER CLOSED (AfterSuite) =====");
-        // ❗ DO NOT CLOSE DRIVER HERE — Jenkins parallel tests fail
+    public void tearDown() {
+        System.out.println("===== DRIVER CLOSED =====");
+        // Do NOT quit driver here in Jenkins
     }
 }
