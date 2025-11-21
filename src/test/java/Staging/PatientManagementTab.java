@@ -23,7 +23,11 @@ public class PatientManagementTab {
     String dobFormatted;
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-
+    
+    // sharing for next class
+    public static WebDriver sharedDriver;
+    public static WebDriverWait sharedWait;
+    
     @BeforeClass
     public void setup() {
         driver = PatientCreate.driver;
@@ -306,5 +310,9 @@ public class PatientManagementTab {
 
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[3]/div/button"))).click();
         System.out.println("AdHOC Filter Added in Management Tab");
+
+        // sharing for next class
+        sharedDriver = driver;
+        sharedWait = wait;
         }
 }
