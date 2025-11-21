@@ -2,12 +2,14 @@ package Staging;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
 import java.time.Duration;
+import java.io.File;
 
 public class BaseClass {
 
@@ -24,7 +26,12 @@ public class BaseClass {
         options.addArguments("--disable-gpu");
         options.addArguments("--window-size=1920,1080");
 
-        driver = new ChromeDriver(options);
+        ChromeDriverService service = new ChromeDriverService.Builder()
+                .withLogOutput(new File("chromedriver.log"))
+                .withVerbose(true)
+                .build();
+
+        driver = new ChromeDriver(service, options);
         wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         driver.manage().window().maximize();
