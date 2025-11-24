@@ -186,6 +186,8 @@ public class PatientCreate extends BaseClass {   // ★ EXTENDS BASECLASS
         wait.until(ExpectedConditions.invisibilityOfElementLocated(
                 By.xpath("//*[@id='main-contents']/div/div/div/div[4]/div/div[1]/div/div/div/div/img")));
 
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id="main-contents"]/div/div/div/div[2]/div/div/div[1]/span[2]/span[2]"))).click();
+
         System.out.println("Patient Added: " + firstName + " " + lastName + " | " + phone + " | " + email);
     }
 
