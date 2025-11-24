@@ -42,8 +42,7 @@ public class PatientManagementTab extends BaseClass {
     @Test(dependsOnMethods = "Staging.PatientCreate.clickAddButton", priority = 1)
     public void openPatientAndNavigateToManagementTab() {
 
-        wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//*[@id=\"main-contents\"]/div/div/div/div[2]/div/div/div[1]/span[2]/span[2]"))).click();
+//      wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"main-contents\"]/div/div/div/div[2]/div/div/div[1]/span[2]/span[2]"))).click();
 
         WebElement ManagementTab = wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[5]/div[1]/span[3]")));
