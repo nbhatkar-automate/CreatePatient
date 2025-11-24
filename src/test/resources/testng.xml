@@ -9,7 +9,6 @@
       <class name="Staging.BaseClass"/>
       <class name="Staging.LoginPage"/>
      <class name="Staging.PatientCreate"/>
-     <class name="Staging.PatientManagementTab"/>
       <class name="Staging.SurveySend"/>
     </classes>
  
