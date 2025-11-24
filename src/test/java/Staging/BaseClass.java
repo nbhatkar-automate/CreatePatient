@@ -12,6 +12,7 @@ public class BaseClass {
 
     public static WebDriver driver;
     public static WebDriverWait wait;
+    public static String globalDOB; // For Global DOB Use
 
     @BeforeSuite
     public void setUp() {
