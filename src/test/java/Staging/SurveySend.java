@@ -1,5 +1,8 @@
 package Staging;
 
+import java.util.List;
+import java.util.Random;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
@@ -69,4 +72,66 @@ String dobToEnter = BaseClass.globalDOB;
 
         System.out.println("Assessment sent to 'This Device'");
     }
-}
+        
+        @Test(dependsOnMethods = "SendAssessment")
+        public void DOB() throws InterruptedException {
+
+            String dob = BaseClass.globalDOB;   // "MM/DD/YYYY"
+            String[] parts = dob.split("/");
+
+         // Remove leading 0 → e.g. 01 -> 1 for survey page and trim white spaces
+            String month = String.valueOf(Integer.parseInt(parts[0].trim()));
+            String day   = String.valueOf(Integer.parseInt(parts[1].trim()));
+            String year  = parts[2].trim();
+            
+            // MONTH Dropdown
+            WebElement monthDrop = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//select[@name='month']")));
+            monthDrop.click();
+            monthDrop.findElement(By.xpath(".//option[@value='" + month + "']")).click();
+
+            // DAY Dropdown
+            WebElement dayDrop = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//select[@name='day']")));
+            dayDrop.click();
+            dayDrop.findElement(By.xpath(".//option[@value='" + day + "']")).click();
+
+            // YEAR Dropdown
+            WebElement yearDrop = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//select[@name='year']")));
+            yearDrop.click();
+            yearDrop.findElement(By.xpath(".//option[@value='" + year + "']")).click();
+
+            // CONTINUE button
+            wait.until(ExpectedConditions.elementToBeClickable(
+                    By.xpath("//*[@id=\"main-section\"]/div/div[1]/div/div[2]/button/span"))).click();
+
+            System.out.println("DOB Verified. Proceeding futher");
+            
+            // Agree Button click
+            wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"main-section\"]/div/div[2]/div/div[4]/button"))).click();
+            
+           // Selecting Answers
+            Random ran = new Random();
+
+            while (true) {
+                try {
+                    // FINAL PAGE DETECTION
+                    if (driver.findElements(By.xpath("//div[@class='results-title' and contains(.,'Scorecard')]")).size() > 0) {
+                        System.out.println("Survey Completed!");
+                        break;
+                    }
+
+                    // Wait for answer options
+                    List<WebElement> answers = wait.until(
+                        ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//label[contains(@class,'selected__label')]")));
+
+                    // Random answer click
+                    WebElement randomAnswer = answers.get(ran.nextInt(answers.size()));
+                    randomAnswer.click();
+
+                    Thread.sleep(700);
+
+                } catch (Exception e) {
+                    Thread.sleep(500);
+                }
+            }
+        }
+ }
