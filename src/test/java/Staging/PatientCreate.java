@@ -47,6 +47,7 @@ public class PatientCreate extends BaseClass {   // ★ EXTENDS BASECLASS
 
         LocalDate dob = LocalDate.of(year, month, day);
         dobFormatted = dob.format(formatter);
+        BaseClass.globalDOB = dobFormatted;   // Save DOB for SurveySend (Survey Fill)
     }
 
     /** Open Quick Add Patient form + fill basic fields */
