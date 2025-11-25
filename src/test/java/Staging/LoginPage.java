@@ -22,7 +22,7 @@ public class LoginPage extends BaseClass {
 
         driver = WebDriverSetup.getDriver(options);
         wait = new WebDriverWait(driver, Duration.ofSeconds(60));
-        driver.manage().window().maximize();
+    //    driver.manage().window().maximize();
 
         driver.get("https://stagingportal.outcomemd.com/");
 
