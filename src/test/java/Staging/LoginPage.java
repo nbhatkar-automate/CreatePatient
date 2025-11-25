@@ -22,12 +22,11 @@ public class LoginPage extends BaseClass {
 
         driver = WebDriverSetup.getDriver(options);
         wait = new WebDriverWait(driver, Duration.ofSeconds(60));
-    //    driver.manage().window().maximize();
 
         driver.get("https://stagingportal.outcomemd.com/");
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@placeholder='Email']")))
-                .sendKeys("nbhatkar@outcomemd.com");
+                .sendKeys("nbhatkar@outcomemd.com");//*[@id="app-component"]/div[3]/div/div/div[2]/div[2]/div[3]/div[1]/span/input
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("input[type='password']")))
                 .sendKeys("Staging@1234");
