@@ -10,7 +10,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.Test;
 
 public class SurveySend extends BaseClass {
-String dobToEnter = BaseClass.globalDOB;
+String dobToEnter = BaseClass.P_DOB;
 
 
     @Test
