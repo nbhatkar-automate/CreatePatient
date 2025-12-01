@@ -3,135 +3,133 @@ package Staging;
 import java.util.List;
 import java.util.Random;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
 
-public class SurveySend extends BaseClass {
-String dobToEnter = BaseClass.P_DOB;
+import java.time.Duration;
 
+public class SurveySend extends BaseClass {
+
+    String dobToEnter = BaseClass.P_DOB;
+    Random ran = new Random();
+
+    // JS click helper
+    private void jsClick(WebElement element) {
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", element);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
+    }
+
+    // Wait for overlay/modals to disappear
+    private void waitForOverlayToDisappear() {
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".modal-background")));
+        } catch (TimeoutException e) {
+            // overlay not present
+        }
+    }
 
     @Test
     public void AddToCart() throws InterruptedException {
+        waitForOverlayToDisappear();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
-        // driver & wait already available from BaseClass (BeforeSuite)
-        
-        WebElement addBtn = wait.until(
-                ExpectedConditions.elementToBeClickable(
-                        By.xpath("//*[@id='main-contents']/div/div/div/div/div[5]/div[1]/span[1]/div[2]")));
-
-        // Scroll + JS Click
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", addBtn);
+        WebElement addBtn = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//*[@id='main-contents']/div/div/div/div/div[5]/div[1]/span[1]/div[2]")));
+        jsClick(addBtn);
         Thread.sleep(1000);
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", addBtn);
 
-        // click on new assessment button
-        wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[4]/div[3]/div[1]"))).click();
-        Thread.sleep(2000);
+        WebElement newAssessmentBtn = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//*[@id=\"main-contents\"]/div/div/div/div/div[4]/div[3]/div[1]")));
+        jsClick(newAssessmentBtn);
+        Thread.sleep(1000);
 
-        // enter cpt name in textbox
-        wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//*[@id=\"main-contents\"]/div/div/div/div[4]/div/div[1]/div/div[2]/div/span[1]/input")))
-                .sendKeys("Anxiety");
+        WebElement cptInput = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//*[@id=\"main-contents\"]/div/div/div/div[4]/div/div[1]/div/div[2]/div/span[1]/input")));
+        cptInput.sendKeys("Anxiety");
+        Thread.sleep(500);
 
-        // open assessment
-        wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//*[@id=\"main-contents\"]/div/div/div/div[4]/div/div[1]/div/div[5]/div[2]/div/div[1]/div/div[1]/h3")))
-                .click();
-        Thread.sleep(2000);
+        WebElement assessmentOpen = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//*[@id=\"main-contents\"]/div/div/div/div[4]/div/div[1]/div/div[5]/div[2]/div/div[1]/div/div[1]/h3")));
+        jsClick(assessmentOpen);
+        Thread.sleep(1000);
 
-        // add to cart
-        WebElement cptselect = wait.until(ExpectedConditions.elementToBeClickable(
+        WebElement cptSelect = wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//*[@id=\"main-contents\"]/div/div/div/div[4]/div/div[1]/div/div[5]/div[2]/div/div[1]/div/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div[3]/span")));
-
-        // Scroll + JS Click
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", cptselect);
-        Thread.sleep(1000);
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", cptselect);
+        jsClick(cptSelect);
+        Thread.sleep(500);
     }
 
     @Test(dependsOnMethods = "AddToCart")
     public void SendAssessment() throws InterruptedException {
+        waitForOverlayToDisappear();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
-        // Radio Button select - This Device
         WebElement radiobtn = wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//*[@id=\"main-contents\"]/div/div/div/div[4]/div/div[2]/div/div/div[1]/div/div/div[4]/div[1]")));
+        jsClick(radiobtn);
+        Thread.sleep(500);
 
-        // Scroll + JS Click
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", radiobtn);
-        Thread.sleep(1000);
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", radiobtn);
-
-        // Send Now Button
-        wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//*[@id=\"main-contents\"]/div/div/div/div[4]/div/div[2]/div/div/div[1]/div/div/div[5]/span/span")))
-                .click();
-
+        WebElement sendNow = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//*[@id=\"main-contents\"]/div/div/div/div[4]/div/div[2]/div/div/div[1]/div/div/div[5]/span/span")));
+        jsClick(sendNow);
         System.out.println("Assessment sent to 'This Device'");
+        Thread.sleep(1000);
     }
-        
-        @Test(dependsOnMethods = "SendAssessment")
-        public void DOB() throws InterruptedException {
 
-            String dob = BaseClass.P_DOB;   // "MM/DD/YYYY"
-            String[] parts = dob.split("/");
+    @Test(dependsOnMethods = "SendAssessment")
+    public void DOB() throws InterruptedException {
+        waitForOverlayToDisappear();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-         // Remove leading 0 → e.g. 01 -> 1 for survey page and trim white spaces
-            String month = String.valueOf(Integer.parseInt(parts[0].trim()));
-            String day   = String.valueOf(Integer.parseInt(parts[1].trim()));
-            String year  = parts[2].trim();
-            
-            // MONTH Dropdown
-            WebElement monthDrop = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//select[@name='month']")));
-            monthDrop.click();
-            monthDrop.findElement(By.xpath(".//option[@value='" + month + "']")).click();
+        String[] parts = dobToEnter.split("/");
+        String month = String.valueOf(Integer.parseInt(parts[0].trim()));
+        String day = String.valueOf(Integer.parseInt(parts[1].trim()));
+        String year = parts[2].trim();
 
-            // DAY Dropdown
-            WebElement dayDrop = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//select[@name='day']")));
-            dayDrop.click();
-            dayDrop.findElement(By.xpath(".//option[@value='" + day + "']")).click();
+        WebElement monthDrop = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//select[@name='month']")));
+        monthDrop.click();
+        monthDrop.findElement(By.xpath(".//option[@value='" + month + "']")).click();
 
-            // YEAR Dropdown
-            WebElement yearDrop = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//select[@name='year']")));
-            yearDrop.click();
-            yearDrop.findElement(By.xpath(".//option[@value='" + year + "']")).click();
+        WebElement dayDrop = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//select[@name='day']")));
+        dayDrop.click();
+        dayDrop.findElement(By.xpath(".//option[@value='" + day + "']")).click();
 
-            // CONTINUE button
-            wait.until(ExpectedConditions.elementToBeClickable(
-                    By.xpath("//*[@id=\"main-section\"]/div/div[1]/div/div[2]/button/span"))).click();
+        WebElement yearDrop = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//select[@name='year']")));
+        yearDrop.click();
+        yearDrop.findElement(By.xpath(".//option[@value='" + year + "']")).click();
 
-            System.out.println("DOB Verified. Proceeding futher");
-            
-            // Agree Button click
-            wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"main-section\"]/div/div[2]/div/div[4]/button"))).click();
-            
-           // Selecting Answers
-            Random ran = new Random();
+        WebElement continueBtn = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//*[@id=\"main-section\"]/div/div[1]/div/div[2]/button/span")));
+        jsClick(continueBtn);
+        Thread.sleep(500);
 
-            while (true) {
-                try {
-                    // FINAL PAGE DETECTION
-                    if (driver.findElements(By.xpath("//div[@class='results-title' and contains(.,'Scorecard')]")).size() > 0) {
-                        System.out.println("Survey Completed!");
-                        break;
-                    }
+        WebElement agreeBtn = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//*[@id=\"main-section\"]/div/div[2]/div/div[4]/button")));
+        jsClick(agreeBtn);
+        Thread.sleep(500);
 
-                    // Wait for answer options
-                    List<WebElement> answers = wait.until(
-                        ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//label[contains(@class,'selected__label')]")));
-
-                    // Random answer click
-                    WebElement randomAnswer = answers.get(ran.nextInt(answers.size()));
-                    randomAnswer.click();
-
-                    Thread.sleep(700);
-
-                } catch (Exception e) {
-                    Thread.sleep(500);
+        // Random answers loop
+        while (true) {
+            try {
+                if (driver.findElements(By.xpath("//div[@class='results-title' and contains(.,'Scorecard')]")).size() > 0) {
+                    System.out.println("Survey Completed!");
+                    break;
                 }
+
+                List<WebElement> answers = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
+                        By.xpath("//label[contains(@class,'selected__label')]")));
+
+                WebElement randomAnswer = answers.get(ran.nextInt(answers.size()));
+                jsClick(randomAnswer);
+
+                Thread.sleep(700);
+
+            } catch (Exception e) {
+                Thread.sleep(500);
             }
         }
- }
+    }
+}
