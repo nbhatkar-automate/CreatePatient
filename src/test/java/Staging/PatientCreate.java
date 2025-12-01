@@ -1,206 +1,302 @@
 package Staging;
 
 import com.github.javafaker.Faker;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.*;
 import org.testng.annotations.*;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
-public class PatientCreate extends BaseClass {   // ★ EXTENDS BASECLASS
+public class PatientCreate extends BaseClass {
 
-    String firstName, lastName, email, phone, dobFormatted;
+    String firstName, lastName, email, phone, dob;
+
+    // Excel file path
+    private static final String EXCEL_PATH = System.getProperty("user.dir")
+            + "/src/test/resources/testdata/PatientData.xlsx";
+
+    // -----------------------------
+    // BEFORE CLASS → DECIDE DATA SOURCE
+    // -----------------------------
+    
+    public static String dataSource; // Global access
 
     @BeforeClass
-    public void setupData() {
-
-        // ★ BaseClass already initializes driver + wait, so NO NEW DRIVER
+    @Parameters("dataSource")
+    public void setup(String ds) {
+        // Initialize driver and wait from BaseClass
         driver = BaseClass.driver;
         wait = BaseClass.wait;
 
-        generatePatientData();
+        // Set data source from TestNG XML parameter
+        dataSource = ds;
+        System.out.println("Data source selected: " + dataSource);
+
+        // Load patient data based on the selected data source
+        if ("faker".equalsIgnoreCase(dataSource)) {
+            System.out.println("dataSource=faker → Using Faker ONLY");
+            setFakerData();
+        } else {
+            System.out.println("dataSource=excel → Trying Excel");
+            loadPatientData(); // Excel → fallback → Faker
+        }
+
+        // Set DOB globally
+        BaseClass.P_DOB = dob;
+
+        // Open Add Patient form & fill first screen
         openAddPatientForm();
     }
 
-    /** Generate fake patient data */
-    public void generatePatientData() {
-        Faker faker = new Faker(new Locale("en-US"));
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    // -----------------------------
+    // LOAD DATA (EXCEL → FALLBACK FAKER)
+    // -----------------------------
+    private void loadPatientData() {
 
-        firstName = faker.name().firstName();
-        lastName = faker.name().lastName();
-        email = String.format(
-                "%s.%s%d@%s",
-                firstName.toLowerCase(),
-                lastName.toLowerCase(),
-                faker.number().numberBetween(100, 999),
-                "testdomain.io"
-        );
-        phone = faker.phoneNumber().subscriberNumber(10);
+        // Prepare faker default values (fallback)
+        setFakerData();
 
-        int year = 1980 + new java.util.Random().nextInt(25);
-        int month = 1 + new java.util.Random().nextInt(12);
-        int day = 1 + new java.util.Random().nextInt(28);
+        try {
+            File f = new File(EXCEL_PATH);
 
-        LocalDate dob = LocalDate.of(year, month, day);
-        dobFormatted = dob.format(formatter);
-        BaseClass.globalDOB = dobFormatted;   // Save DOB for SurveySend (Survey Fill)
+            if (!f.exists()) {
+                System.out.println("Excel not found → Using Faker");
+                return;
+            }
+
+            FileInputStream fis = new FileInputStream(f);
+            XSSFWorkbook wb = new XSSFWorkbook(fis);
+
+            Sheet sheet = wb.getSheetAt(0);
+            Row row = sheet.getRow(1); // Row 2 (index 1)
+
+            if (row != null) {
+                String excelFN  = getStringCell(row, 0);
+                String excelLN  = getStringCell(row, 1);
+                String excelEM  = getStringCell(row, 2);
+                String excelPH  = getStringCell(row, 3);
+                String excelDOB = getStringCell(row, 4);
+
+                if (!excelFN.isEmpty()) firstName = excelFN;
+                if (!excelLN.isEmpty()) lastName  = excelLN;
+                if (!excelEM.isEmpty()) email     = excelEM;
+                if (!excelPH.isEmpty()) phone     = excelPH;
+                if (!excelDOB.isEmpty()) dob      = excelDOB;
+            }
+
+            wb.close();
+            fis.close();
+
+        } catch (Exception e) {
+            System.out.println("Excel error → Using Faker");
+        }
     }
 
-    /** Open Quick Add Patient form + fill basic fields */
-    public void openAddPatientForm() {
+    // -----------------------------
+    // BEGINNER-FRIENDLY EXCEL READER
+    // Fixes phone like 3.122E9 → 31225558479
+    // -----------------------------
+    private String getStringCell(Row row, int col) {
+        try {
+            Cell cell = row.getCell(col);
 
-        // Search input
-        WebElement addPatientInput = wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//input[@placeholder='Search or Add Patient (name, cell, or email)']")));
-        addPatientInput.click();
+            if (cell == null) return "";
 
-        // Quick add option
-        WebElement addNew = wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//div[contains(text(), 'Quick Add New Patient')]")));
-        addNew.click();
+            if (cell.getCellType() == CellType.STRING)
+                return cell.getStringCellValue().trim();
 
-        // Phone number
+            if (cell.getCellType() == CellType.NUMERIC) {
+                long longVal = (long) cell.getNumericCellValue();
+                return String.valueOf(longVal);
+            }
+
+            return cell.toString().trim();
+
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    // -----------------------------
+    // GENERATE FAKER DATA (DEFAULT)
+    // -----------------------------
+    private void setFakerData() {
+
+        Faker faker = new Faker(new Locale("en-US"));
+
+        firstName = faker.name().firstName();
+        lastName  = faker.name().lastName();
+
+        email = firstName.toLowerCase() + "." + lastName.toLowerCase()
+                + faker.number().numberBetween(100, 999)
+                + "@testmail.com";
+
+        phone = faker.number().digits(10);
+
+        Date fakerDob = faker.date().birthday(25, 65);
+        dob = new SimpleDateFormat("MM/dd/yyyy").format(fakerDob);
+    }
+
+    // -----------------------------
+    // OPEN FORM & FILL BASIC DETAILS
+    // -----------------------------
+    private void openAddPatientForm() {
+
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//input[@placeholder='Search or Add Patient (name, cell, or email)']")))
+                .click();
+
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//div[contains(text(), 'Quick Add New Patient')]")))
+                .click();
+
         wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[1]/div[1]/div/div[1]/input")))
                 .sendKeys(phone);
 
-        // Fill out full info
-        WebElement fillFullForm = wait.until(ExpectedConditions.elementToBeClickable(
+        WebElement fullFormBtn = wait.until(ExpectedConditions.elementToBeClickable(
                 By.cssSelector("#app-component > div.modal > div.modal-box-container > div > div.patient-add-form.mobile > div.patient-add-short > div:nth-child(2) > div.fill-out-text > div")));
 
-        scrollIntoView(fillFullForm);
-        fillFullForm.click();
+        fullFormBtn.click();
 
-        // First name
         driver.findElement(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[1]/input"))
                 .sendKeys(firstName);
 
-        // Last name
         driver.findElement(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[2]/input"))
                 .sendKeys(lastName);
 
-        // Email
         driver.findElement(By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[3]/input"))
                 .sendKeys(email);
 
-        // DOB
-        WebElement dateInput = wait.until(ExpectedConditions.visibilityOfElementLocated(
+        WebElement dobInput = wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.cssSelector("input[placeholder='Date of birth']")));
 
         ((JavascriptExecutor) driver)
-                .executeScript("arguments[0]._flatpickr.setDate('" + dobFormatted + "', true);", dateInput);
+                .executeScript("arguments[0]._flatpickr.setDate('" + dob + "', true);", dobInput);
 
-        sleep(800);
-
-        WebElement modalContainer = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("#app-component > div.modal > div.modal-box-container")));
-        scrollIntoView(modalContainer);
+        sleep(600);
     }
 
-    /** Select Sex */
+    // -----------------------------
+    // SEX
+    // -----------------------------
     @Test
     public void selectSex() {
         WebElement dropdown = wait.until(ExpectedConditions.elementToBeClickable(
                 By.cssSelector("#app-component > div.modal > div.modal-box-container > div > div.patient-add-form.mobile > div.patient-add-long > div.patient-long-form.patient-add-long > div > div:nth-child(6) > div.custom-select-container > div.custom-select")));
 
-        scrollIntoView(dropdown);
+        scroll(dropdown);
         dropdown.click();
 
         WebElement option = wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[6]/div[2]/div[2]/div[4]")));
 
-        scrollIntoView(option);
+        scroll(option);
         option.click();
     }
 
-    /** Select Gender */
+    // -----------------------------
+    // GENDER
+    // -----------------------------
     @Test(dependsOnMethods = "selectSex")
     public void selectGender() {
 
         WebElement genderBtn = wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[7]/span/span/button")));
 
-        scrollIntoView(genderBtn);
+        scroll(genderBtn);
         genderBtn.click();
 
-        clickWithScroll("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[7]/span/div/div[1]/div[4]/span/input");
-        clickWithScroll("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[7]/span/div/div[1]/div[7]/span/input");
+        clickScroll("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[7]/span/div/div[1]/div[4]/span/input");
+        clickScroll("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[7]/span/div/div[1]/div[7]/span/input");
 
-        clickWithScroll("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[7]/span/div/div[2]/button");
+        clickScroll("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[7]/span/div/div[2]/button");
     }
 
-    /** Select Race */
+    // -----------------------------
+    // RACE
+    // -----------------------------
     @Test(dependsOnMethods = "selectGender")
     public void selectRace() {
 
         WebElement raceBtn = wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[8]/span/span/button")));
 
-        scrollIntoView(raceBtn);
+        scroll(raceBtn);
         raceBtn.click();
 
-        clickWithScroll("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[8]/span/div/div[1]/div[2]/span/input");
-        clickWithScroll("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[8]/span/div/div[1]/div[4]/span/input");
-        clickWithScroll("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[8]/span/div/div[1]/div[5]/span/input");
+        clickScroll("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[8]/span/div/div[1]/div[2]/span/input");
+        clickScroll("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[8]/span/div/div[1]/div[4]/span/input");
+        clickScroll("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[8]/span/div/div[1]/div[5]/span/input");
 
-        clickWithScroll("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[8]/span/div/div[2]/button");
+        clickScroll("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[8]/span/div/div[2]/button");
     }
 
-    /** Select Ethnicity */
+    // -----------------------------
+    // ETHNICITY
+    // -----------------------------
     @Test(dependsOnMethods = "selectRace")
     public void selectEthnicity() {
 
         WebElement ethBtn = wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[9]/span/span/button")));
 
-        scrollIntoView(ethBtn);
+        scroll(ethBtn);
         ethBtn.click();
 
-        clickWithScroll("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[9]/span/div/div[1]/div[6]/span/input");
-        clickWithScroll("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[9]/span/div/div[1]/div[9]/span/input");
+        clickScroll("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[9]/span/div/div[1]/div[6]/span/input");
+        clickScroll("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[9]/span/div/div[1]/div[9]/span/input");
 
-        clickWithScroll("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[9]/span/div/div[2]/button");
+        clickScroll("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[1]/div/div[9]/span/div/div[2]/button");
     }
 
-    /** Final Add Button */
+    // -----------------------------
+    // FINAL ADD BUTTON
+    // -----------------------------
     @Test(dependsOnMethods = "selectEthnicity")
     public void clickAddButton() {
 
         WebElement addBtn = wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//*[@id=\"app-component\"]/div[1]/div[2]/div/div[2]/div[2]/div[2]/button")));
 
-        scrollIntoView(addBtn);
+        scroll(addBtn);
+        
         addBtn.click();
 
         try {
             WebElement yesButton = wait.until(ExpectedConditions.elementToBeClickable(
-                    By.xpath("//button[contains(text(), 'Yes Proceed')]")));
+                    By.xpath("//button[contains(text(),'Yes Proceed')]")));
             yesButton.click();
-        } catch (Exception e) {
-            // ignore
-        }
+        } catch (Exception ignore) {}
 
         wait.until(ExpectedConditions.invisibilityOfElementLocated(
                 By.xpath("//*[@id='main-contents']/div/div/div/div[4]/div/div[1]/div/div/div/div/img")));
 
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='main-contents']/div/div/div/div[2]/div/div/div[1]/span[2]/span[2]"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//*[@id='main-contents']/div/div/div/div[2]/div/div/div[1]/span[2]/span[2]")))
+                .click();
 
-        System.out.println("Patient Added: " + firstName + " " + lastName + " | " + phone + " | " + email);
+        System.out.println("Patient Added → " + firstName + " " + lastName +
+                " | " + phone + " | " + email);
     }
 
-    // Utility scroll
-    private void scrollIntoView(WebElement element) {
+    // -----------------------------
+    // Utilities
+    // -----------------------------
+    private void scroll(WebElement element) {
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
-        sleep(400);
+        sleep(300);
     }
 
-    private void clickWithScroll(String xpath) {
+    private void clickScroll(String xpath) {
         WebElement el = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
-        scrollIntoView(el);
+        scroll(el);
         el.click();
     }
 
