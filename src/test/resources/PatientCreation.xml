@@ -1,0 +1,15 @@
+<suite name="OutcomeMD_Automation" parallel="false">
+
+  <test name="PatientCreationUsingExcel">
+    <parameter name="dataSource" value="excel"/>
+
+    <classes>
+      <class name="Staging.BaseClass"/>
+      <class name="Staging.LoginPage"/>
+      <class name="Staging.PatientCreate"/>
+      <class name="Staging.PatientManagementTab"/>
+      <class name="Staging.SurveySend"/>
+    </classes>
+  </test>
+
+</suite>

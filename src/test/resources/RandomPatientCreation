@@ -1,0 +1,15 @@
+<suite name="OutcomeMD_Automation" parallel="false">
+
+  <test name="PatientCreationUsingFaker">
+    <parameter name="dataSource" value="faker"/>
+
+    <classes>
+      <class name="Staging.BaseClass"/>
+      <class name="Staging.LoginPage"/>
+      <class name="Staging.PatientCreate"/>
+      <class name="Staging.PatientManagementTab"/>
+      <class name="Staging.SurveySend"/>
+    </classes>
+  </test>
+
+</suite>
