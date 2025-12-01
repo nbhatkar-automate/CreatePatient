@@ -42,9 +42,11 @@ public class PatientCreate extends BaseClass {
         if ("faker".equalsIgnoreCase(dataSource)) {
             System.out.println("dataSource=faker → Using Faker ONLY");
             setFakerData();
-        } else {
+        } else if ("excel".equalsIgnoreCase(dataSource)) {
             System.out.println("dataSource=excel → Trying Excel");
-            loadPatientData(); // Excel → fallback → Faker
+            loadPatientDataExcelOnly(); // throw error if Excel missing
+        } else {
+            throw new RuntimeException("Unknown dataSource: " + dataSource);
         }
 
         // Set DOB globally
@@ -55,19 +57,14 @@ public class PatientCreate extends BaseClass {
     }
 
     // -----------------------------
-    // LOAD DATA (EXCEL → FALLBACK FAKER)
+    // LOAD DATA STRICTLY FROM EXCEL
     // -----------------------------
-    private void loadPatientData() {
-
-        // Prepare faker default values (fallback)
-        setFakerData();
-
+    private void loadPatientDataExcelOnly() {
         try {
             File f = new File(EXCEL_PATH);
 
             if (!f.exists()) {
-                System.out.println("Excel not found → Using Faker");
-                return;
+                throw new RuntimeException("Excel file not found at: " + EXCEL_PATH);
             }
 
             FileInputStream fis = new FileInputStream(f);
@@ -94,9 +91,10 @@ public class PatientCreate extends BaseClass {
             fis.close();
 
         } catch (Exception e) {
-            System.out.println("Excel error → Using Faker");
+            throw new RuntimeException("Error reading Excel file → " + e.getMessage(), e);
         }
     }
+
 
     // -----------------------------
     // BEGINNER-FRIENDLY EXCEL READER
