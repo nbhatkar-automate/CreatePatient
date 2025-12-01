@@ -76,7 +76,7 @@ String dobToEnter = BaseClass.P_DOB;
         @Test(dependsOnMethods = "SendAssessment")
         public void DOB() throws InterruptedException {
 
-            String dob = BaseClass.globalDOB;   // "MM/DD/YYYY"
+            String dob = BaseClass.P_DOB;   // "MM/DD/YYYY"
             String[] parts = dob.split("/");
 
          // Remove leading 0 → e.g. 01 -> 1 for survey page and trim white spaces
