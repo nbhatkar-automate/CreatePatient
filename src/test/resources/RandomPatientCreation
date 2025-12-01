@@ -8,7 +8,7 @@
       <class name="Staging.LoginPage"/>
       <class name="Staging.PatientCreate"/>
       <class name="Staging.PatientManagementTab"/>
-      <class name="Staging.SurveySendTest"/>
+      <class name="Staging.SurveySend"/>
     </classes>
   </test>
 
