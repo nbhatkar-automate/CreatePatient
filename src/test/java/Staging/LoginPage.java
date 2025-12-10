@@ -13,15 +13,9 @@ public class LoginPage extends BaseClass {
     @Test
     public void loginTest() {
 
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless=new");
-        options.addArguments("--window-size=1920,1080");
-        options.addArguments("--disable-gpu");
-        options.addArguments("--no-sandbox");
-        options.addArguments("--disable-dev-shm-usage");
-
-        driver = WebDriverSetup.getDriver(options);
-        wait = new WebDriverWait(driver, Duration.ofSeconds(60));
+        // Use driver & wait from BaseClass
+        driver = BaseClass.driver;
+        wait = BaseClass.wait;
 
         driver.get("https://stagingportal.outcomemd.com/");
 
