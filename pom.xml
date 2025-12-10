@@ -62,16 +62,16 @@
             </plugin>
 
            <!-- Surefire plugin to run TestNG -->
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-surefire-plugin</artifactId>
-    <version>3.1.2</version>
-    <configuration>
-        <suiteXmlFiles>
-            <suiteXmlFile>src/test/resources/PatientCreation.xml</suiteXmlFile>
-        </suiteXmlFiles>
-    </configuration>
-</plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>3.1.2</version>
+            <configuration>
+                <suiteXmlFiles>
+                    <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+                </suiteXmlFiles>
+            </configuration>
+         </plugin>
 
 
         </plugins>
